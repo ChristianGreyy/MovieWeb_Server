@@ -5,6 +5,7 @@ const authRouter = require("./auth.route");
 const movieRouter = require("./movie.route");
 const commentRouter = require("./comment.route");
 const transactionRouter = require("./transaction.route");
+const facebookRouter = require("./facebook.route");
 
 const defaultRoutes = [
   {
@@ -26,6 +27,10 @@ const defaultRoutes = [
   {
     path: "/api/transaction",
     route: transactionRouter,
+  },
+  {
+    path: "/api/facebook",
+    route: facebookRouter,
   },
 ];
 

@@ -4,4 +4,5 @@ module.exports = {
   movieController: require("./movie.controller"),
   userController: require("./user.controller"),
   transactionController: require("./transaction.controller"),
+  facebookController: require("./facebook.controller"),
 };
