@@ -5,4 +5,5 @@ module.exports = {
   userController: require("./user.controller"),
   transactionController: require("./transaction.controller"),
   facebookController: require("./facebook.controller"),
+  historyController: require("./history.controller"),
 };

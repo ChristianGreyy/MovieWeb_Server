@@ -4,4 +4,5 @@ module.exports = {
   Movie: require("./movie.model"),
   Comment: require("./comment.model"),
   Video: require("./video.model"),
+  History: require("./history.model"),
 };

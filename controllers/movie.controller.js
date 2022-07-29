@@ -4,8 +4,10 @@ const httpStatus = require("http-status");
 const { Video } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const moment = require("moment");
 
 exports.getMovies = catchAsync(async (req, res, next) => {
+  console.log("ok");
   const movies = await movieService.getMovies(req.query);
   res.json({
     status: httpStatus.OK,
@@ -143,4 +145,27 @@ exports.getVideo = catchAsync(async (req, res, next) => {
   //   src,
   //   accessToken: req.accessToken,
   // });
+});
+
+exports.postHistory = catchAsync(async (req, res, next) => {
+  const { movieId } = req.params;
+  const time = moment().calendar();
+  let user = req.user;
+  const newHistory = await movieService.postHistory(movieId, time, user);
+  return res.json({
+    status: httpStatus.CREATED,
+    data: {
+      newHistory: newHistory,
+    },
+  });
+});
+
+exports.getHistory = catchAsync(async (req, res, next) => {
+  const history = await await movieService.getHistory(req.user);
+  return res.json({
+    status: httpStatus.OK,
+    data: {
+      history: history,
+    },
+  });
 });
