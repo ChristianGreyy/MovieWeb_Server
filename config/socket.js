@@ -5,6 +5,8 @@ const { createServer } = require("https");
 const { readFileSync } = require("fs");
 const { resolve } = require("path");
 const { nanoid } = require("nanoid");
+const authSocket = require("../middlewares/authSocket");
+const c = require("config");
 
 let io;
 
@@ -93,12 +95,32 @@ module.exports = {
         console.log("socket::close");
       });
 
-      socket.on("client-to-server-comment", (value) => {
+      socket.on("client-to-server-comment", async (value) => {
         console.log(value);
-        io.emit("server-to-client-comment", value);
+        if (authSocket(value.refreshToken, io).error) {
+          return;
+        }
+
+        const movieId = value.movieId;
+        const content = value.content;
+        const userId = value.user._id;
+        const commentId = value.commentId;
+        let comment = await commentService.postComment(
+          movieId,
+          content,
+          userId,
+          commentId
+        );
+        io.emit("server-to-client-comment", comment);
       });
-      socket.on("client-to-server-like", (value) => {
-        io.emit("server-to-client-like", value);
+      socket.on("client-to-server-like", async (value) => {
+        if (authSocket(value.refreshToken, io).error) {
+          return;
+        }
+        const commentId = value.commentId;
+        const user = value.user;
+        const comment = await commentService.likeComment(commentId, user._id);
+        io.emit("server-to-client-like", comment);
       });
     });
 

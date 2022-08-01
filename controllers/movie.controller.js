@@ -41,9 +41,6 @@ exports.createMovie = catchAsync(async (req, res, next) => {
 });
 
 exports.evaluateMovie = catchAsync(async (req, res, next) => {
-  if (!req.user) {
-    throw new AppError("Vui lòng đăng nhập", httpStatus.FORBIDDEN);
-  }
   const { star } = req.body;
   const userId = req.user._id;
   const { movieId } = req.params;

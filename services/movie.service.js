@@ -110,9 +110,11 @@ const evaluateMovie = async (userId, movieId, star) => {
       httpStatus.NOT_FOUND
     );
   }
+  console.log("userId", userId);
   const index = movie.user_stars.findIndex((item) => {
-    return item.user == userId;
+    return item.user.toString() == userId.toString();
   });
+  console.log(index);
   if (index == -1) {
     movie.user_stars.push({
       user: userId,

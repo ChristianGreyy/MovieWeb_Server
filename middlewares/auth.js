@@ -7,14 +7,6 @@ const { tokenService } = require("../services");
 
 module.exports = catchAsync(async (req, res, next) => {
   let refreshToken;
-  // if (req.headers["set-cookie"]) {
-  //   refreshToken = req.headers["set-cookie"][0];
-  // }
-  // if (!refreshToken) {
-  //   console.log("refresh het han");
-  //   req.user = undefined;
-  //   return next();
-  // }
   let accessToken;
   if (req.headers.authorization) {
     accessToken = req.headers.authorization.split(" ")[1];
