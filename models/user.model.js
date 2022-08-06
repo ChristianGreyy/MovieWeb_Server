@@ -42,6 +42,23 @@ const userSchema = new Schema(
     isVip: {
       type: Boolean,
     },
+    name: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
+    dayOfBirth: {
+      type: Date,
+    },
+    phoneNumber: {
+      type: String,
+    },
+    gender: {
+      type: String,
+      enum: ["Nam", "Nữ"],
+      default: "Nam",
+    },
   },
   {
     timestamps: true,

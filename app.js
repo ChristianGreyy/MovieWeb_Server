@@ -69,7 +69,7 @@ passport.use(
       // clientSecret: process.env.FACEBOOK_API_SECRET,
       clientID: "1101727280551683",
       clientSecret: "e12f7c653da4d163cdc681234a49875d",
-      callbackURL: "https://localhost:8080/api/facebook/auth/facebook/callback",
+      callbackURL: "/api/facebook/auth/facebook/callback",
       profileFields: [
         "email",
         "id",

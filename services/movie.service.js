@@ -1,4 +1,4 @@
-const { Movie, Video } = require("../models");
+const { Movie, Video, History } = require("../models");
 const AppError = require("../utils/appError");
 const httpStatus = require("http-status");
 const path = require("path");

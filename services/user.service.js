@@ -20,9 +20,18 @@ const getUser = async (userId) => {
 const getUserById = async (userId) => {
   const user = await User.findOne(
     { _id: userId },
-    { username: 1, email: 1, avatar: 1 }
+    {
+      username: 1,
+      email: 1,
+      avatar: 1,
+      isVip: 1,
+      name: 1,
+      address: 1,
+      dayOfBirth: 1,
+      phoneNumber: 1,
+    }
   );
-  console.log(user);
+
   if (!user) {
     throw new AppError("Người dùng này không tồn tại", httpStatus.NOT_FOUND);
   }
@@ -30,17 +39,20 @@ const getUserById = async (userId) => {
 };
 
 //Edit email user by id
-// const editUser = async (userId, email) => {
-//   const user = await User.findByIdAndUpdate(userId, email);
-//   if (!user) {
-//     throw new AppError("Người dùng này không tồn tại", httpStatus.NOT_FOUND);
-//   }
-//   return user;
-// };
+const editUser = async (userId, fieldsUpdate) => {
+  const user = await User.findByIdAndUpdate(userId, fieldsUpdate, {
+    new: true,
+    runValidators: true,
+  });
+  if (!user) {
+    throw new AppError("Người dùng này không tồn tại", httpStatus.NOT_FOUND);
+  }
+  return user;
+};
 
 module.exports = {
   getUser,
   getUsers,
   getUserById,
-  // editUser,
+  editUser,
 };

@@ -4,8 +4,10 @@ const httpStatus = require("http-status");
 const { Video } = require("../models");
 const fs = require("fs");
 const path = require("path");
+const moment = require("moment");
 
 exports.getMovies = catchAsync(async (req, res, next) => {
+  console.log("ok");
   const movies = await movieService.getMovies(req.query);
   res.json({
     status: httpStatus.OK,

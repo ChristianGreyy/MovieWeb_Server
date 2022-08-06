@@ -36,15 +36,22 @@ exports.getUserById = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.editUser = catchAsync(async (req, res, next) => {
-//   const { userId } = req.params;
-//   const { email } = req.body;
-//   const user = await userService.editUser(userId, email);
-//   console.log(user);
-//   return res.json({
-//     status: httpStatus.OK,
-//     data: {
-//       user,
-//     },
-//   });
-// });
+exports.editUser = catchAsync(async (req, res, next) => {
+  const userId = req.user._id;
+  const fieldsUpdate = {
+    name: req.body.name,
+    address: req.body.address,
+    dayOfBirth: req.body.dayOfBirth,
+    phoneNumber: req.body.phoneNumber,
+    gender: req.body.gender,
+  };
+
+  const user = await userService.editUser(userId, fieldsUpdate);
+
+  return res.json({
+    status: httpStatus.OK,
+    data: {
+      user,
+    },
+  });
+});
