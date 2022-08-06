@@ -2,6 +2,8 @@ const { Server } = require("socket.io");
 const logger = require("./logger");
 const { commentService } = require("../services");
 const { createServer } = require("https");
+// const { createServer } = require("http");
+
 const { readFileSync } = require("fs");
 const { resolve } = require("path");
 const { nanoid } = require("nanoid");
@@ -12,29 +14,33 @@ let io;
 
 const existSocketId = [];
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+}
+
 const handleJsonMessage = (socket, jsonMessage) => {
   switch (jsonMessage.action) {
     case "start":
-      // console.log(jsonMessage.data.userId);
-      socket.id = nanoid();
-      // socket.id = jsonMessage.data.userId;
-      // console.log(socket);
-      socket.join(socket.id);
+      existSocketId.push(socket.id);
+      console.log(existSocketId);
       emitMessage(socket, { action: "start", id: socket.id });
       break;
     default:
-      // console.log("remote", jsonMessage.data.remoteId);
-      if (!jsonMessage.data.remoteId) return;
-
-      const remotePeerSocket = getSocketById(socket, jsonMessage.data.remoteId);
-      // console.log(remotePeerSocket);
-      if (!remotePeerSocket) {
-        return console.log(
-          "failed to find remote socket with id",
-          jsonMessage.data.remoteId
-        );
+      let remotePeerSocket;
+      if (!jsonMessage.data.remoteId) {
+        let randomIndex = getRandomInt(0, existSocketId.length - 1);
+      } else {
+        remotePeerSocket = getSocketById(socket, jsonMessage.data.remoteId);
+        if (!remotePeerSocket) {
+          return console.log(
+            "failed to find remote socket with id",
+            jsonMessage.data.remoteId
+          );
+        }
       }
-
+      // console.log(remotePeerSocket
       if (jsonMessage.action !== "offer") {
         delete jsonMessage.data.remoteId;
       } else {
@@ -46,7 +52,7 @@ const handleJsonMessage = (socket, jsonMessage) => {
 };
 
 const emitMessage = (socket, jsonMessage) => {
-  console.log(JSON.stringify(jsonMessage));
+  // console.log(JSON.stringify(jsonMessage));
   socket.emit("server-to-client", JSON.stringify(jsonMessage));
 };
 
@@ -63,7 +69,6 @@ const getSocketById = (socket, socketId) => {
 
 module.exports = {
   init: (app) => {
-    // const httpServer = createServer(app);
     const httpServer = createServer(
       {
         cert: readFileSync(resolve(__dirname, "../ssl/cert.pem")),
@@ -71,6 +76,7 @@ module.exports = {
       },
       app
     );
+    // const httpServer = createServer(app);
     io = new Server(httpServer, {
       cors: {
         origin: "*",

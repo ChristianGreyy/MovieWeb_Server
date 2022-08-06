@@ -7,9 +7,11 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const AppError = require("../utils/appError");
 const passport = require("passport");
+const fetch = require("node-fetch");
 
 // /api/facebook
 exports.home = catchAsync(async (req, res, next) => {
+  console.log(req.user);
   if (!req.user) {
     res.json({ message: "Vui long dang nhap tai /api/facebook/login" });
     // res.redirect("/api/facebook/login");
@@ -22,6 +24,7 @@ exports.home = catchAsync(async (req, res, next) => {
       status: httpStatus.OK,
       data: { id: id, photo: photo, fullName: fullName, email: email },
     });
+    // res.redirect("https://localhost:3000");
   }
 });
 
@@ -37,7 +40,10 @@ exports.authFacebook = catchAsync(async (req, res, next) => {
 
 // /auth/facebook/callback
 exports.callBack = catchAsync(async (req, res, next) => {
-  res.redirect("/api/facebook");
+  // res.json({
+
+  // })
+  res.redirect("https://localhost:3000/");
 });
 
 // /api/facebook/logout
@@ -46,6 +52,13 @@ exports.logout = catchAsync(async (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/api/facebook");
+    res.redirect("https://localhost:3000/");
+  });
+});
+
+exports.test = catchAsync(async (req, res, next) => {
+  const data = await (await fetch("http://localhost:8080/api/facebook")).json();
+  res.json({
+    data,
   });
 });

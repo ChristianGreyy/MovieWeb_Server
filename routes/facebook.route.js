@@ -4,6 +4,8 @@ const { facebookController } = require("../controllers");
 const passport = require("passport");
 const { ensureAuthenticated } = require("../middlewares/authFacebook");
 
+// facebookRouter.get("/test", facebookController.test);
+
 facebookRouter.get("/", facebookController.home);
 
 facebookRouter.get("/account", ensureAuthenticated, facebookController.account);
