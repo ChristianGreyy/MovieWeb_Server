@@ -6,9 +6,9 @@ const AppError = require("../utils/appError");
 
 //http://localhost:8080/api/comment/:movieId
 exports.postComment = catchAsync(async (req, res, next) => {
-  if (!req.user) {
-    throw new AppError("Bạn cần phải đăng nhập", httpStatus.FORBIDDEN);
-  }
+  // if (!req.user) {
+  //   throw new AppError("Bạn cần phải đăng nhập", httpStatus.FORBIDDEN);
+  // }
   let { movieId } = req.params;
   let { commentId, content } = req.body; //comment commentId, comment origin, content
   // console.log(content);

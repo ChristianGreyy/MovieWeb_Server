@@ -16,7 +16,9 @@ const postComment = async (movieId, content, userId, commentId) => {
     parentComment.responseNumber += 1;
     await parentComment.save();
   }
-  return await comment.save();
+  const newComment = await comment.save();
+  return await Comment.findById(newComment._id).populate("user");
+  // .then(comment.populate("user", userId));
 };
 
 const getCommentByMovie = async (movie, query) => {
@@ -33,9 +35,10 @@ const likeComment = async (commentId, userId) => {
   let comment = await Comment.findOne({ _id: commentId, likes: userId });
   // var size = Object.keys(k).length;
   console.log(comment);
+  let newComment;
 
   if (comment) {
-    return await Comment.findByIdAndUpdate(
+    newComment = await Comment.findByIdAndUpdate(
       commentId,
       {
         $pull: { likes: userId },
@@ -44,7 +47,7 @@ const likeComment = async (commentId, userId) => {
       { new: true }
     );
   } else {
-    return await Comment.findByIdAndUpdate(
+    newComment = await Comment.findByIdAndUpdate(
       commentId,
       {
         $push: { likes: userId },
@@ -53,6 +56,7 @@ const likeComment = async (commentId, userId) => {
       { new: true }
     );
   }
+  return await Comment.findById(newComment._id).populate("user");
 };
 
 const deleteComment = async (cmt) => {

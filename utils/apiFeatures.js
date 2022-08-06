@@ -5,6 +5,7 @@ class APIFeatures {
   }
 
   filter() {
+    const filter = {};
     const queryObj = { ...this.queryString };
     const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
@@ -12,8 +13,29 @@ class APIFeatures {
     // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    let object = JSON.parse(queryStr);
+    if (object.name) {
+      const regex = new RegExp(object.name.toUpperCase());
+      object["$regex"] = regex;
+      delete object.name;
+      filter["name"] = { ...object };
+    }
+    if (object.kind) {
+      let array = [];
+      let string = object.kind
+        .split("-")[0]
+        .concat(" ")
+        .concat(object.kind.split("-")[1]);
 
-    this.query = this.query.find(JSON.parse(queryStr));
+      const regex = new RegExp(string);
+      object["$regex"] = regex;
+      array.push({ category: object });
+      array.push({ original: object });
+      delete object.kind;
+      filter["$or"] = [...array];
+      console.log(filter);
+    }
+    this.query = this.query.find(filter);
 
     return this;
   }

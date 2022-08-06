@@ -6,7 +6,7 @@ const auth = require("../middlewares/auth");
 commentRouter
   .route("/:movieId")
   .get(commentController.getCommentByMovie)
-  .post(auth, commentController.postComment)
+  .post(commentController.postComment)
   .delete(commentController.deleteComment);
 
 commentRouter
