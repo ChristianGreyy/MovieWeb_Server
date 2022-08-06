@@ -3,7 +3,6 @@ const logger = require("./logger");
 const { commentService } = require("../services");
 // const { createServer } = require("https");
 const { createServer } = require("http");
-
 const { readFileSync } = require("fs");
 const { resolve } = require("path");
 const { nanoid } = require("nanoid");
@@ -63,14 +62,14 @@ const getSocketById = (socket, socketId) => {
 
 module.exports = {
   init: (app) => {
-    const httpServer = createServer(app);
-    // const httpServer = createServer(
-    //   {
-    //     cert: readFileSync(resolve(__dirname, "../ssl/cert.pem")),
-    //     key: readFileSync(resolve(__dirname, "../ssl/cert.key")),
-    //   },
-    //   app
-    // );
+    // const httpServer = createServer(app);
+    const httpServer = createServer(
+      {
+        cert: readFileSync(resolve(__dirname, "../ssl/cert.pem")),
+        key: readFileSync(resolve(__dirname, "../ssl/cert.key")),
+      },
+      app
+    );
     io = new Server(httpServer, {
       cors: {
         origin: "*",

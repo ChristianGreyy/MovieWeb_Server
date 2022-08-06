@@ -209,22 +209,6 @@ const getVideo = async (movieId, episode) => {
   return streammingVideo(video);
 };
 
-const postHistory = async (movieId, time, user) => {
-  const history = new History({
-    movie: movieId,
-    time: time,
-    user: user,
-  });
-
-  return await history.save();
-};
-
-const getHistory = async (user) => {
-  return await History.find({ user: user })
-    .populate([{ path: "movie" }])
-    .sort({ updatedAt: -1 });
-};
-
 module.exports = {
   getMovies,
   getMoviesByName,
@@ -234,6 +218,4 @@ module.exports = {
   getVideo,
   getVideos,
   getVideosById,
-  postHistory,
-  getHistory,
 };

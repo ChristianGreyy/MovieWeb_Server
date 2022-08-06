@@ -6,18 +6,13 @@ const auth = require("../middlewares/auth");
 movieRouter.route("/videos").get(movieController.getVideos);
 movieRouter.route("/videos/:movieId").get(movieController.getVideosById);
 
-// auth
+//auth
 movieRouter
   .route("/")
   .get(movieController.getMovies)
   .post(movieController.createMovie);
 
-movieRouter.route("/history").get(auth, movieController.getHistory);
-
-movieRouter
-  .route("/:movieId")
-  .post(auth, movieController.postHistory)
-  .get(movieController.getMovieById);
+movieRouter.route("/:movieId").get(movieController.getMovieById);
 
 movieRouter.route("/video/:movieId/:episode").get(movieController.getVideo);
 

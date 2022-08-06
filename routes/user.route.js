@@ -4,9 +4,9 @@ const { userController } = require("../controllers");
 const auth = require("../middlewares/auth");
 
 userRouter.route("/").get(userController.getUsers);
-userRouter.route("/info").get(auth, userController.getUser);
+
+userRouter.route("/edit").put(auth, userController.editUser);
 
 userRouter.route("/:userId").get(userController.getUserById);
-// .put(userController.editUser);
 
 module.exports = userRouter;

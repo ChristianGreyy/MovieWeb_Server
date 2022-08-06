@@ -146,26 +146,3 @@ exports.getVideo = catchAsync(async (req, res, next) => {
   //   accessToken: req.accessToken,
   // });
 });
-
-exports.postHistory = catchAsync(async (req, res, next) => {
-  const { movieId } = req.params;
-  const time = moment().calendar();
-  let user = req.user;
-  const newHistory = await movieService.postHistory(movieId, time, user);
-  return res.json({
-    status: httpStatus.CREATED,
-    data: {
-      newHistory: newHistory,
-    },
-  });
-});
-
-exports.getHistory = catchAsync(async (req, res, next) => {
-  const history = await await movieService.getHistory(req.user);
-  return res.json({
-    status: httpStatus.OK,
-    data: {
-      history: history,
-    },
-  });
-});
