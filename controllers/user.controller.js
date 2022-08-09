@@ -1,6 +1,7 @@
 const catchAsync = require("../utils/catchAsync");
 const userService = require("../services/user.service");
 const httpStatus = require("http-status");
+const { User, Movie } = require("../models");
 
 exports.getUsers = catchAsync(async (req, res, next) => {
   const users = await userService.getUsers(req.query);
@@ -53,5 +54,29 @@ exports.editUser = catchAsync(async (req, res, next) => {
     data: {
       user,
     },
+  });
+});
+
+exports.info = catchAsync(async (req, res, next) => {
+  const { avatar, email, _id, username, gender } = req.user;
+  const movies = await Movie.find();
+  let movieArray = [];
+  movies.forEach((movie) => {
+    movie.user_stars.forEach((user) => {
+      if (user.user.toString() == req.user._id.toString()) {
+        movieArray.push(movie);
+      }
+    });
+  });
+  const userDoc = await User.findOne({
+    _id: req.user._id,
+  })
+    .populate("transaction")
+    .select("-password");
+
+  const user = { ...userDoc._doc };
+  user.movies = movieArray;
+  res.json({
+    user,
   });
 });

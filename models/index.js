@@ -5,4 +5,5 @@ module.exports = {
   Comment: require("./comment.model"),
   Video: require("./video.model"),
   History: require("./history.model"),
+  Transaction: require("./transaction.model"),
 };

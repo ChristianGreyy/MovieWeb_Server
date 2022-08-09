@@ -12,10 +12,22 @@ const transactionSchema = new Schema(
       required: true,
       ref: "User",
     },
+    name_bank: {
+      type: String,
+      required: true,
+    },
+    service_package: {
+      type: String,
+      required: true,
+    },
+    kind_package: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Transaction", movieSchema);
+module.exports = mongoose.model("Transaction", transactionSchema);

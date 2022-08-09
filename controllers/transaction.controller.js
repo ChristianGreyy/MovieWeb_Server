@@ -2,14 +2,9 @@ var $ = require("jquery");
 const AppError = require("../utils/appError");
 const httpStatus = require("http-status");
 const catchAsync = require("../utils/catchAsync");
+const { Transaction } = require("../models");
 
 exports.createPaymentURL = catchAsync(async (req, res, next) => {
-  if (!req.user) {
-    throw new AppError(
-      "Chưa đăng nhập, vui lòng đăng nhập để thực hiện giao dịch",
-      httpStatus.FORBIDDEN
-    );
-  }
   try {
     var ipAddr =
       req.headers["x-forwarded-for"] ||
@@ -73,7 +68,7 @@ exports.createPaymentURL = catchAsync(async (req, res, next) => {
 
     res.json({
       url: vnpUrl,
-      accessToken: req.accessToken,
+      // accessToken: req.accessToken,
     });
   } catch (err) {
     console.log(err);
@@ -81,21 +76,30 @@ exports.createPaymentURL = catchAsync(async (req, res, next) => {
 });
 
 exports.response = catchAsync(async (req, res, next) => {
-  const { amount } = req.body;
-  if (!req.user || !amount) {
-    throw new AppError(
-      "Ngươi dùng chưa đăng nhập, giao dịch thất bại",
-      httpStatus.FORBIDDEN
-    );
+  const { amount, name_bank } = req.body;
+  let transaction = new Transaction({
+    money: amount,
+    service_package: "Gói MAX",
+    name_bank,
+  });
+  if (amount == "79200000") {
+    transaction.kind_package = "12 tháng";
+  } else if (amount == "3960000") {
+    transaction.kind_package = "6 tháng";
+  } else {
+    transaction.kind_package = "1 tháng";
   }
-  // if(amount == 66000) {
 
-  // }
   req.user.isVip = true;
+  transaction.user = req.user._id;
+  await transaction.save();
+  req.user.transaction.push(transaction._id);
   await req.user.save();
+  console.log(transaction);
+
+  // console.log(req.user);
   res.json({
     status: httpStatus.CREATED,
-    accessToken: req.accessToken,
   });
 });
 

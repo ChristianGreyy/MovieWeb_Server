@@ -7,6 +7,8 @@ userRouter.route("/").get(userController.getUsers);
 
 userRouter.route("/edit").put(auth, userController.editUser);
 
+userRouter.route("/info").get(auth, userController.info);
+
 userRouter.route("/:userId").get(userController.getUserById);
 
 module.exports = userRouter;

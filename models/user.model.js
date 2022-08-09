@@ -59,6 +59,12 @@ const userSchema = new Schema(
       enum: ["Nam", "Nữ"],
       default: "Nam",
     },
+    transaction: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Transaction",
+      },
+    ],
   },
   {
     timestamps: true,

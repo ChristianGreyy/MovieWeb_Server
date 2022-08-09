@@ -7,7 +7,7 @@ const path = require("path");
 const moment = require("moment");
 
 exports.getMovies = catchAsync(async (req, res, next) => {
-  console.log("ok");
+  console.log("okkkkkkkkkk");
   const movies = await movieService.getMovies(req.query);
   res.json({
     status: httpStatus.OK,
@@ -19,7 +19,7 @@ exports.getMovies = catchAsync(async (req, res, next) => {
 
 exports.getMovieById = catchAsync(async (req, res, next) => {
   const { movieId } = req.params;
-  // console.log(movieId);
+  console.log(movieId);
 
   const movie = await movieService.getMovieById(movieId);
 
@@ -59,6 +59,7 @@ exports.evaluateMovie = catchAsync(async (req, res, next) => {
 });
 
 exports.getVideosById = catchAsync(async (req, res, next) => {
+  console.log("dannnn");
   const videos = await movieService.getVideosById(
     req.params.movieId,
     req.query
@@ -80,6 +81,7 @@ exports.getVideos = catchAsync(async (req, res, next) => {
 });
 
 exports.getVideo = catchAsync(async (req, res, next) => {
+  console.log("nguuuuuuuuu");
   const { movieId, episode } = req.params;
 
   const video = await Video.findOne({

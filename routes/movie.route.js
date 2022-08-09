@@ -5,8 +5,8 @@ const auth = require("../middlewares/auth");
 
 movieRouter.route("/videos").get(movieController.getVideos);
 movieRouter.route("/videos/:movieId").get(movieController.getVideosById);
-
-//auth
+movieRouter.route("/video/:movieId/:episode").get(movieController.getVideo);
+// auth
 movieRouter
   .route("/")
   .get(movieController.getMovies)
@@ -14,9 +14,6 @@ movieRouter
 
 movieRouter.route("/:movieId").get(movieController.getMovieById);
 
-
-movieRouter
-  .route("/:movieId/evaluate")
-  .put(auth, movieController.evaluateMovie);
+movieRouter.route("/:movieId/evaluate").put(movieController.evaluateMovie);
 
 module.exports = movieRouter;
