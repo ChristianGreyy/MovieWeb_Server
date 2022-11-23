@@ -14,6 +14,8 @@ movieRouter
 
 movieRouter.route("/:movieId").get(movieController.getMovieById);
 
-movieRouter.route("/:movieId/evaluate").put(movieController.evaluateMovie);
+movieRouter
+  .route("/:movieId/evaluate")
+  .put(auth, movieController.evaluateMovie);
 
 module.exports = movieRouter;

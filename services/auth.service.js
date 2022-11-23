@@ -18,6 +18,7 @@ const login = async (username, password) => {
   const user = await User.findOne({
     username,
   }).select("+password");
+  console.log(user);
   if (!user) {
     throw new AppError(
       "Tài khoản hoặc mật khảu không phù hợp",

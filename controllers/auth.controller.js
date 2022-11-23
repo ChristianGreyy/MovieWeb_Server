@@ -20,13 +20,6 @@ exports.login = catchAsync(async (req, res, next) => {
     status: "success",
     token,
   });
-  // res.cookie("jwt", token.access.token, {
-  //   expires: new Date(
-  //     Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-  //   ),
-  //   httpOnly: true,
-  //   secure: req.secure || req.headers["x-forwarded-proto"] === "https",
-  // });
 });
 
 exports.register = catchAsync(async (req, res, next) => {
@@ -41,7 +34,6 @@ exports.register = catchAsync(async (req, res, next) => {
     email,
     passwordagain
   );
-  console.log(user);
   emailService.sendEmail(
     email,
     user.username,
@@ -70,11 +62,6 @@ exports.registerStatus = catchAsync(async (req, res, next) => {
     client.emailExpires = undefined;
     client = await client.save();
     io.getIo().emit("register-success", "success");
-
-    // io.getIo().on("connection", (socket) => {
-    //   console.log("ok");
-    //   socket.emit("register-success", "success");
-    // });
     res.json({
       status: httpStatus[200],
       message: "Đăng ký thành công",

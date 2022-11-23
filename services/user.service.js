@@ -31,6 +31,7 @@ const getUserById = async (userId) => {
       phoneNumber: 1,
     }
   );
+  console.log(user);
 
   if (!user) {
     throw new AppError("Người dùng này không tồn tại", httpStatus.NOT_FOUND);

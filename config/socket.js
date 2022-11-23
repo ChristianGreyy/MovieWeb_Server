@@ -2,7 +2,7 @@ const { Server } = require("socket.io");
 const logger = require("./logger");
 const { commentService } = require("../services");
 
-const { createServer } = require("https");
+const { createServer } = require("http");
 
 const { readFileSync } = require("fs");
 const { resolve } = require("path");
@@ -12,7 +12,7 @@ const c = require("config");
 
 let io;
 
-const existSocketId = [];
+let existSocketId = [];
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -21,16 +21,46 @@ function getRandomInt(min, max) {
 }
 
 const handleJsonMessage = (socket, jsonMessage) => {
+  // console.log("call liên tục");
   switch (jsonMessage.action) {
     case "start":
       existSocketId.push(socket.id);
-      console.log(existSocketId);
-      emitMessage(socket, { action: "start", id: socket.id });
+      // console.log(existSocketId);
+      emitMessage(socket, {
+        action: "start",
+        id: socket.id,
+        // socketId: socket.id,
+      });
       break;
     default:
       let remotePeerSocket;
       if (!jsonMessage.data.remoteId) {
-        let randomIndex = getRandomInt(0, existSocketId.length - 1);
+        // console.log("jsonMessage", jsonMessage);
+        let randomIndex;
+        // console.log(existSocketId);
+        if (existSocketId.length == 1) {
+          // console.log("Không thể random");
+          emitMessage(socket, {
+            action: "error",
+            error: "Không tìm thấy đối tác",
+          });
+          return;
+        }
+        do {
+          randomIndex = getRandomInt(0, existSocketId.length);
+          // console.log(existSocketId[randomIndex]);
+          // console.log(jsonMessage.data.localId);
+          // if (jsonMessage.data.localId) {
+          //   console.log(
+          //     existSocketId[randomIndex].toString() ==
+          //       jsonMessage.data.localId.toString()
+          //   );
+          // }
+          console.log(existSocketId[randomIndex], socket.id);
+        } while (existSocketId[randomIndex] == socket.id);
+        // console.log(jsonMessage.data.localId, existSocketId[randomIndex]);
+        remotePeerSocket = getSocketById(socket, existSocketId[randomIndex]);
+        // return;
       } else {
         remotePeerSocket = getSocketById(socket, jsonMessage.data.remoteId);
         if (!remotePeerSocket) {
@@ -40,13 +70,13 @@ const handleJsonMessage = (socket, jsonMessage) => {
           );
         }
       }
+
       // console.log(remotePeerSocket
       if (jsonMessage.action !== "offer") {
         delete jsonMessage.data.remoteId;
       } else {
         jsonMessage.data.remoteId = socket.id;
       }
-
       emitMessage(remotePeerSocket, jsonMessage);
   }
 };
@@ -69,14 +99,14 @@ const getSocketById = (socket, socketId) => {
 
 module.exports = {
   init: (app) => {
-    const httpServer = createServer(
-      {
-        cert: readFileSync(resolve(__dirname, "../ssl/cert.pem")),
-        key: readFileSync(resolve(__dirname, "../ssl/cert.key")),
-      },
-      app
-    );
-    // const httpServer = createServer(app);
+    // const httpServer = createServer(
+    //   {
+    //     cert: readFileSync(resolve(__dirname, "../ssl/cert.pem")),
+    //     key: readFileSync(resolve(__dirname, "../ssl/cert.key")),
+    //   },
+    //   app
+    // );
+    const httpServer = createServer(app);
     io = new Server(httpServer, {
       cors: {
         origin: "*",
@@ -87,10 +117,11 @@ module.exports = {
 
     io.on("connection", (socket) => {
       socket.on("message", (data) => {
-        console.log("socket::message data=%s", data);
+        // console.log("socket::message data=%s", data);
 
         try {
           const jsonMessage = JSON.parse(data);
+          // console.log(jsonMessage);
           handleJsonMessage(socket, jsonMessage);
         } catch (error) {
           console.error("failed to handle onmessage", error);
@@ -127,6 +158,15 @@ module.exports = {
         const user = value.user;
         const comment = await commentService.likeComment(commentId, user._id);
         io.emit("server-to-client-like", comment);
+      });
+
+      socket.on("disconnect", () => {
+        // console.log(socket.id);
+        existSocketId = existSocketId.filter((socketId) => {
+          return socketId != socket.id;
+        });
+        console.log(existSocketId);
+        console.log("user disconnected");
       });
     });
 
